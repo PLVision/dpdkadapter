@@ -1,0 +1,47 @@
+-----------
+dpdkadapter
+-----------
+Intel® DPDK is a set of software libraries and Ethernet drivers (native and virtualized) that run in
+Linux user space to boost packet processing throughput on Intel® architecture.
+
+DPDKAdapter is a static C++ library that uses DPDK library and provides the following capabilities to an external application through its simple API:
+Transmit streams of packets  in a line rate according to a chosen scheme and timing requirements;
+Capture Ethernet traffic on a line rate.
+
+Dpdkadapter is used for support Intel® DPDK for Ostinato, with all its functionality preserved.
+
+Why DPDK provides considerable speed improvements
+ - Allows avoiding latency while copying through kernel space
+ - Allows avoiding using Linux scheduler and bind thread to CPU core
+ - No threads synchronization
+
+Ostinato is an open-source, cross-platform network packet crafter/traffic generator and analyzer. Craft and send packets of several streams with different protocols at different rates.
+
+Steps to use Ostinato with DPDK adapter:
+1. Download DPDK by link:
+   http://dpdk.org/browse/dpdk/tag/?id=v1.7.0
+
+   Put it in main "Ostinato DPDK" folder, folder name should be dpdk-1.7.0.
+
+2. Modify the following dpdk file to compile it properly:
+    dpdk-1.7.0/config/common_linuxapp
+      CONFIG_RTE_BUILD_SHARED_LIB=y # Compile to share library
+      CONFIG_RTE_BUILD_COMBINE_LIBS=y # Combine to one single library
+
+3. Build dpdkadapter:
+    cd path/to/ostinato_dpdk_repo/dpdkadapter
+    # run script sudo ./custom_setup.sh <interface_list>
+    sudo ./custom_setup.sh eth1 eth2
+    make
+
+4. Ostinato dependencies should be met on system, for more details please refer Ostinato manual:
+    sudo apt-get install qt4-dev-tools protobuf-compiler libprotobuf-dev libpcap-dev mercurial
+    
+
+5. Build Ostinato:
+    cd path/to/ostinato_dpdk_repo
+    qmake
+    make
+
+Run Ostinato server uses DPDKAdapter:
+    - sudo ./path/to/ostinato_dpdk_repo/start.sh
